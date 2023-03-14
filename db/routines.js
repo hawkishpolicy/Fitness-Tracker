@@ -193,11 +193,15 @@ async function destroyRoutine(id) {
   try {
     await client.query(
       `
-    DELETE
-    FROM routines
-    WHERE routines.id=$1
-    `,
-      [id]
+      DELETE
+      FROM routine_activities
+      WHERE routine_activities."routineId"=${id};
+
+      DELETE 
+      FROM routines
+      WHERE routines.id=${id};
+
+    `
     );
   } catch (error) {
     console.error("Error during destroyRoutine");
