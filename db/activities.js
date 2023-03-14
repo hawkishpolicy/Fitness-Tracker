@@ -43,15 +43,78 @@ async function getAllActivities() {
 }
 
 // this function should return a single activity (object) from the database that matches the name that is passed in as an argument.
-async function getActivityByName(name) {}
+async function getActivityByName(name) {
+  try {
+    const {
+      rows: [activity],
+    } = await client.query(
+      `
+      SELECT * 
+      FROM activities
+      WHERE name=$1;
+    `,
+      [name]
+    );
+
+    return activity;
+  } catch (error) {
+    console.error("Error during getActivityByName!");
+    throw error;
+  }
+}
 
 // this function should return a single activity (object) from the database that matches the id that is passed in as an argument.
-async function getActivityById(id) {}
+async function getActivityById(id) {
+  try {
+    const {
+      rows: [activity],
+    } = await client.query(
+      `
+      SELECT * 
+      FROM activities
+      WHERE id=$1;
+    `,
+      [id]
+    );
+
+    return activity;
+  } catch (error) {
+    console.error("Error during getActivityByName!");
+    throw error;
+  }
+}
 
 // The id should not be changed
 // You should be able to update the name, or the description, or name & description.
 // return the updated activity
-async function updateActivity({ id, ...fields }) {}
+async function updateActivity({ id, ...fields }) {
+  const setString = Object.keys(fields)
+    .map((key, index) => `"${key}"=$${index + 1}`)
+    .join(", ");
+
+  if (setString.length === 0) {
+    return;
+  }
+
+  try {
+    const {
+      rows: [activity],
+    } = await client.query(
+      `
+      UPDATE activities
+      SET ${setString}
+      WHERE id=${id}
+      RETURNING *;
+    `,
+      Object.values(fields)
+    );
+
+    return activity;
+  } catch (error) {
+    console.error("Error during updateActivity!");
+    throw error;
+  }
+}
 
 // Do NOT modify the attachActivitiesToRoutines function.  You will need to use this function in your routines.js file whenever you need to attach activities to your routines.
 async function attachActivitiesToRoutines(routines) {

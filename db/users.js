@@ -73,10 +73,13 @@ async function getUserById(userId) {
   try {
     const {
       rows: [user],
-    } = await client.query(`
+    } = await client.query(
+      `
       SELECT * FROM users
-      WHERE id=${userId}
-    `);
+      WHERE id=$1;
+    `,
+      [userId]
+    );
     delete user.password;
     return user;
   } catch (error) {
