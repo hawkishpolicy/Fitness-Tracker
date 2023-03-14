@@ -1,14 +1,14 @@
-require("dotenv").config()
-const express = require("express")
-const app = express()
+require("dotenv").config();
+const express = require("express");
+const app = express();
 
-const cors = require('cors')
+const cors = require("cors");
 
-app.use (cors())
+app.use(cors());
 app.use(express.json());
 
-const morgan = require('morgan');
-app.use(morgan('dev'));
+const morgan = require("morgan");
+app.use(morgan("dev"));
 
 app.use((req, res, next) => {
   console.log("<____Body Logger START____>");
@@ -18,17 +18,21 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/', (req, res) => {
-  res.redirect('/docs');
+app.get("/", (req, res) => {
+  res.redirect("/docs");
 });
 
-const apiRouter = require('./api');
-app.use('/api', apiRouter);
+const apiRouter = require("./api");
+app.use("/api", apiRouter);
 
-const  client  = require('./db/client');
+app.use((error, req, res, next) => {
+  res.send({
+    name: error.name,
+    message: error.message,
+  });
+});
+
+const client = require("./db/client");
 client.connect();
-
-
-
 
 module.exports = app;

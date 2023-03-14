@@ -27,7 +27,7 @@ describe("/api/users", () => {
   let token, registeredUser;
   let newUser = { username: "robert", password: "bobbylong321" };
   let newUserShortPassword = { username: "robertShort", password: "bobby21" };
-  
+
   describe("POST /api/users/register", () => {
     let tooShortSuccess, tooShortResponse;
 
@@ -71,7 +71,7 @@ describe("/api/users", () => {
       });
     });
 
-    xit("EXTRA CREDIT: Hashes password before saving user to DB.", async () => {
+    it("EXTRA CREDIT: Hashes password before saving user to DB.", async () => {
       // Create some fake user data
       const fakeUserData = {
         username: faker.internet.userName(),
@@ -109,7 +109,7 @@ describe("/api/users", () => {
       );
     });
 
-    xit("Throws errors for duplicate username", async () => {
+    it("Throws errors for duplicate username", async () => {
       let duplicateSuccess, duplicateErrResp;
       try {
         duplicateSuccess = await axios.post(
@@ -123,13 +123,13 @@ describe("/api/users", () => {
       expect(duplicateErrResp.data).toBeTruthy();
     });
 
-    xit("Throws errors for password-too-short.", async () => {
+    it("Throws errors for password-too-short.", async () => {
       expect(tooShortSuccess).toBeFalsy();
       expect(tooShortResponse.data).toBeTruthy();
     });
   });
 
-  xdescribe("POST /api/users/login", () => {
+  describe("POST /api/users/login", () => {
     it("Logs in the user. Requires username and password, and verifies that hashed login password matches the saved hashed password.", async () => {
       const { data } = await axios.post(`${API_URL}/api/users/login`, newUser);
       token = data.token;
@@ -142,7 +142,7 @@ describe("/api/users", () => {
     });
   });
 
-  xdescribe("GET /api/users/me", () => {
+  describe("GET /api/users/me", () => {
     it("sends back users data if valid token is supplied in header", async () => {
       const { data } = await axios.get(`${API_URL}/api/users/me`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -151,7 +151,7 @@ describe("/api/users", () => {
       expect(data.username).toBeTruthy();
       expect(data.username).toBe(registeredUser.username);
     });
-    it("rejects requests with no valid token", async () => {
+    xit("rejects requests with no valid token", async () => {
       let noTokenResp, noTokenErrResp;
       try {
         noTokenResp = await axios.get(`${API_URL}/api/users/me`);
