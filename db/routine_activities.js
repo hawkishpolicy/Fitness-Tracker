@@ -33,19 +33,98 @@ async function addActivityToRoutine({
 // Work on the remainder of this file FIFTH
 
 // this function should return a single routine_activity (object) from the database that matches the id that is passed in as an argument.
-async function getRoutineActivityById(id) {}
+async function getRoutineActivityById(id) {
+  try {
+    const {
+      rows: [routine],
+    } = await client.query(
+      `
+      SELECT * 
+      FROM routine_activities
+      WHERE routine_activities.id=$1
+    `,
+      [id]
+    );
+
+    return routine;
+  } catch (error) {
+    console.error("Error at getRoutineActivityById");
+    throw error;
+  }
+}
 
 // this function should return an array of routine_activity objects that are attached to the routine id that is passed in as part of the argument.
-async function getRoutineActivitiesByRoutine({ id }) {}
+async function getRoutineActivitiesByRoutine({ id }) {
+  try {
+    const { rows: routineActivities } = await client.query(
+      `
+      SELECT *
+      FROM routine_activities
+      WHERE routine_activities."routineId"=$1
+    `,
+      [id]
+    );
+
+    return routineActivities;
+  } catch (error) {
+    console.error("Error at getRoutineActivitiesByRoutine");
+    throw error;
+  }
+}
 
 // The id should not be changed
 // You should be able to update the count, or the duration, or count & duration.
 // return the updated routine_activity
-async function updateRoutineActivity({ id, ...fields }) {}
+async function updateRoutineActivity({ id, ...fields }) {
+  const setString = Object.keys(fields)
+    .map((key, index) => `"${key}"=$${index + 1}`)
+    .join(", ");
+
+  if (setString.length === 0) {
+    return;
+  }
+
+  try {
+    const {
+      rows: [routineActivity],
+    } = await client.query(
+      `
+      UPDATE routine_activities
+      SET ${setString}
+      WHERE id=${id}
+      RETURNING *;
+    `,
+      Object.values(fields)
+    );
+
+    return routineActivity;
+  } catch (error) {
+    console.error("Error at updateRoutineActivity");
+    throw error;
+  }
+}
 
 // this should remove a routine_activity from the database based upon the id that is passed in as an argument
 // you should return the routine_activity that was deleted
-async function destroyRoutineActivity(id) {}
+async function destroyRoutineActivity(id) {
+  try {
+    const {
+      rows: [routineActivity],
+    } = await client.query(
+      `
+      DELETE
+      FROM routine_activities
+      WHERE routine_activites.id=$1
+    `,
+      [id]
+    );
+
+    return routineActivity;
+  } catch (error) {
+    console.error("Error at destroyRoutineActivity");
+    throw error;
+  }
+}
 
 // check if the userId that is passed in as an argument matches the id of the user who created the routine_activity (the id was also passed into the function as an argument).
 // if the user created the routine_activity then return true, otherwise return false.
