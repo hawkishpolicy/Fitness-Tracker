@@ -28,7 +28,18 @@ async function createRoutine({ creatorId, isPublic, name, goal }) {
 }
 
 // this function returns an array of all of the routines with their activities attached. Use the helper function attachActivitiesToRoutines() from "db/activities" to help with this.
-async function getAllRoutines() {}
+async function getAllRoutines() {
+  try {
+    const { rows: routines } = await client.query(`
+      SELECT *
+      FROM routine_activities 
+      JOIN routines ON routine_activities."routineId"=routines.id
+    `);
+  } catch (error) {
+    console.log("Error during getAllRoutines!");
+    throw error;
+  }
+}
 
 // this function returns an array of all of the public routines with their activities attached. Use the helper function attachActivitiesToRoutines() from "db/activities" to help with this.
 

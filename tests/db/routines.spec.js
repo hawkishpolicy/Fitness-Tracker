@@ -115,7 +115,7 @@ describe("DB Routines", () => {
   });
 
   describe("createRoutine({ creatorId, isPublic, name, goal })", () => {
-    xit("creates and returns the new routine", async () => {
+    it("creates and returns the new routine", async () => {
       const user = await createFakeUser();
 
       const routineData = {
