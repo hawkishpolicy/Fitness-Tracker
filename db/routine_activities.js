@@ -112,9 +112,18 @@ async function destroyRoutineActivity(id) {
       rows: [routineActivity],
     } = await client.query(
       `
+      SELECT *
+      FROM routine_activities
+      WHERE routine_activities.id=$1
+    `,
+      [id]
+    );
+
+    await client.query(
+      `
       DELETE
       FROM routine_activities
-      WHERE routine_activites.id=$1
+      WHERE routine_activities.id=$1
     `,
       [id]
     );
@@ -128,7 +137,26 @@ async function destroyRoutineActivity(id) {
 
 // check if the userId that is passed in as an argument matches the id of the user who created the routine_activity (the id was also passed into the function as an argument).
 // if the user created the routine_activity then return true, otherwise return false.
-async function canEditRoutineActivity(routineActivityId, userId) {}
+async function canEditRoutineActivity(routineActivityId, userId) {
+  try {
+    const {
+      rows: [canEdit],
+    } = await client.query(
+      `
+      SELECT routine_activities.*
+      FROM routine_activities
+      JOIN routines ON routine_activities."routineId"=routines.id
+      WHERE routine_activities.id=$1 AND routines."creatorId"=$2
+  `,
+      [routineActivityId, userId]
+    );
+
+    return canEdit;
+  } catch (error) {
+    console.error("Error at canEditRoutineActivitiy");
+    throw error;
+  }
+}
 
 module.exports = {
   getRoutineActivityById,
