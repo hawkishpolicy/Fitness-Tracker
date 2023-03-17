@@ -11,6 +11,7 @@ const morgan = require("morgan");
 app.use(morgan("dev"));
 
 app.use((req, res, next) => {
+  console.log("");
   console.log("<____Body Logger START____>");
   console.log(req.body);
   console.log("<_____Body Logger END_____>");
