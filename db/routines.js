@@ -108,6 +108,7 @@ async function getAllRoutinesByUser({ username }) {
     `,
       [username]
     );
+
     return attachActivitiesToRoutines(routines);
   } catch (error) {
     console.error("Error during getAllRoutinesByUser!!");

@@ -151,7 +151,7 @@ describe("/api/users", () => {
       expect(data.username).toBeTruthy();
       expect(data.username).toBe(registeredUser.username);
     });
-    xit("rejects requests with no valid token", async () => {
+    it("rejects requests with no valid token", async () => {
       let noTokenResp, noTokenErrResp;
       try {
         noTokenResp = await axios.get(`${API_URL}/api/users/me`);
@@ -163,7 +163,7 @@ describe("/api/users", () => {
     });
   });
 
-  xdescribe("GET /api/users/:username/routines", () => {
+  describe("GET /api/users/:username/routines", () => {
     it("Gets a list of public routines for a particular user.", async () => {
       const userId = 2;
       const userWithRoutines = await getUserById(userId);
@@ -181,7 +181,10 @@ describe("/api/users", () => {
       });
 
       const { data: routines } = await axios.get(
-        `${API_URL}/api/users/${data.username}/routines`
+        `${API_URL}/api/users/${data.username}/routines`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
       const routinesFromDB = await getAllRoutinesByUser(data);
       expect(routines).toBeTruthy();
