@@ -46,6 +46,7 @@ async function getUserByUsernameWithPassword(userName) {
     `,
       [userName]
     );
+
     if (user) {
       return user;
     }
