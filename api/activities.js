@@ -58,7 +58,7 @@ activitiesRouter.post("/", async (req, res, next) => {
     res.status(406);
     next({
       name: "AlreadyExists",
-      message: "Activity already exists! dumbass",
+      message: "Activity already exists!",
     });
   }
 });

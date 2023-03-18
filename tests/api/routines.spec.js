@@ -44,7 +44,7 @@ describe("/api/routines", () => {
   };
 
   const activityToCreate = {
-    name: "dead lift",
+    name: "dead lift2",
     description: "perfect form is the goal",
   };
 
@@ -87,7 +87,7 @@ describe("/api/routines", () => {
     });
   });
 
-  xdescribe("POST /api/routines", () => {
+  describe("POST /api/routines", () => {
     beforeAll(async () => {
       try {
         const newRoutineToCreate = {
@@ -132,7 +132,7 @@ describe("/api/routines", () => {
     });
   });
 
-  xdescribe("PATCH /api/routines/:routineId", () => {
+  describe("PATCH /api/routines/:routineId", () => {
     let newRoutineForTesting;
     let errorForNotBeingAuthorized;
     let errorForTryingToEditARoutineThatIsNotYours;
