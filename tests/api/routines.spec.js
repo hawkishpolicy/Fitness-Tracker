@@ -277,7 +277,7 @@ describe("/api/routines", () => {
     });
   });
 
-  xdescribe("DELETE /api/routines/:routineId", () => {
+  describe("DELETE /api/routines/:routineId", () => {
     let errorForTryingToDeleteARoutineThatIsNotYours;
 
     beforeAll(async () => {

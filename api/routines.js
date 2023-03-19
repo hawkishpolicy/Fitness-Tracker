@@ -4,11 +4,12 @@ const {
   createRoutine,
   updateRoutine,
   getRoutineById,
-} = require("../db/routines");
+  destroyRoutine,
+  getRoutineActivityById,
+} = require("../db");
 const routinesRouter = express.Router();
 
 // GET /api/routines
-
 routinesRouter.get("/", async (req, res, next) => {
   try {
     const routines = await getAllPublicRoutines();
@@ -20,7 +21,6 @@ routinesRouter.get("/", async (req, res, next) => {
 });
 
 // POST /api/routines
-
 routinesRouter.post("/", async (req, res, next) => {
   const newRoutine = req.body;
   try {
@@ -41,12 +41,10 @@ routinesRouter.post("/", async (req, res, next) => {
 });
 
 // PATCH /api/routines/:routineId
-
 routinesRouter.patch("/:routineId", async (req, res, next) => {
   const { routineId: id } = req.params;
   const updatedRoutine = req.body;
   const comparedId = await getRoutineById(id);
-  console.log("$$$$", req.body);
   try {
     if (req.user && req.user.id == comparedId.creatorId) {
       const routineToReturn = await updateRoutine({ id, ...updatedRoutine });
@@ -64,7 +62,47 @@ routinesRouter.patch("/:routineId", async (req, res, next) => {
 });
 
 // DELETE /api/routines/:routineId
+routinesRouter.delete("/:routineId", async (req, res, next) => {
+  try {
+    const { routineId: id } = req.params;
+    const routineToDelete = await getRoutineById(id);
+    if (req.user && req.user.id == routineToDelete.creatorId) {
+      await destroyRoutine(id);
+      res.send(routineToDelete);
+    } else {
+      next({ name, message });
+    }
+  } catch ({ name, message }) {
+    res.status(403);
+    next({
+      name: "Forbidden",
+      message: "You have to be the routine creator in order to delete it",
+    });
+  }
+});
 
 // POST /api/routines/:routineId/activities
+routinesRouter.post("/:routineId/activities", async (req, res, next) => {
+  try {
+    const { routineId: id } = req.params;
+    const routineActivityToAdd = req.body;
+    const preventDupe = await getRoutineActivityById(id);
+    console.log("rATA: ", routineActivityToAdd);
+    console.log("PD: ", preventDupe);
+    if (
+      !(
+        routineActivityToAdd.routineId === preventDupe.routineId &&
+        routineActivityToAdd.activityId === preventDupe.activityId
+      )
+    ) {
+      console.log("GRAHHHHHHHHHHH");
+      res.send();
+    } else {
+      next({ name, message });
+    }
+  } catch ({ next, message }) {
+    next({ name: "Forbidden", message: "Cannot create duplicate activity" });
+  }
+});
 
 module.exports = routinesRouter;
