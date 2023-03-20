@@ -39,14 +39,8 @@ routineActivitiesRouter.delete(
   "/:routineActivityId",
   async (req, res, next) => {
     const { routineActivityId: id } = req.params;
-    console.log("sdaddd", id);
     const canEdit = await canEditRoutineActivity(id, req.user.id);
     const deletedRoutineActivity = await destroyRoutineActivity(id);
-    // const routine = await getRoutineById(deletedRoutineActivity.routineId);
-
-    console.log("ghjkl", deletedRoutineActivity);
-    console.log("asdfgh", req.user.id);
-    console.log("ghjyre", canEdit);
     try {
       if (canEdit) {
         res.send(deletedRoutineActivity);
