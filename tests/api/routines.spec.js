@@ -357,7 +357,7 @@ describe("/api/routines", () => {
     });
   });
 
-  xdescribe("POST /api/routines/:routineId/activities", () => {
+  describe("POST /api/routines/:routineId/activities", () => {
     let routineActivityThatWeCreated;
     let firstUserRoutine;
     let errorForTryingToAddAnActivityToARoutineThatIsNotYours;

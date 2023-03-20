@@ -6,6 +6,10 @@ const {
   getRoutineById,
   destroyRoutine,
   getRoutineActivityById,
+  addActivityToRoutine,
+  getAllActivities,
+  getAllRoutines,
+  getRoutineActivitiesByRoutine,
 } = require("../db");
 const routinesRouter = express.Router();
 
@@ -85,22 +89,26 @@ routinesRouter.delete("/:routineId", async (req, res, next) => {
 routinesRouter.post("/:routineId/activities", async (req, res, next) => {
   try {
     const { routineId: id } = req.params;
-    const routineActivityToAdd = req.body;
-    const preventDupe = await getRoutineActivityById(id);
-    console.log("rATA: ", routineActivityToAdd);
-    console.log("PD: ", preventDupe);
-    if (
-      !(
-        routineActivityToAdd.routineId === preventDupe.routineId &&
-        routineActivityToAdd.activityId === preventDupe.activityId
-      )
-    ) {
-      console.log("GRAHHHHHHHHHHH");
-      res.send();
+    const activityToAdd = req.body;
+    const currentRoutineActivities = await getRoutineActivitiesByRoutine({
+      id,
+    });
+
+    let duplicateExists = false;
+    for (const currentRoutineActivity of currentRoutineActivities) {
+      if (activityToAdd.activityId === currentRoutineActivity.activityId) {
+        duplicateExists = true;
+      }
+    }
+    if (!duplicateExists) {
+      const routineActivityToReturn = await addActivityToRoutine(activityToAdd);
+      res.send(routineActivityToReturn);
     } else {
+      console.log("this is working");
       next({ name, message });
     }
-  } catch ({ next, message }) {
+  } catch ({ name, message }) {
+    res.status(403);
     next({ name: "Forbidden", message: "Cannot create duplicate activity" });
   }
 });
