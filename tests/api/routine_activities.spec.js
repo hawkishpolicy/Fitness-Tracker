@@ -132,7 +132,7 @@ describe("/api/routine_activities", () => {
       );
     });
 
-    xit("should return an error if the owner of the routine isn't the one trying to edit it", async () => {
+    it("should return an error if the owner of the routine isn't the one trying to edit it", async () => {
       expect(theUserNeedsToBeLoggedInToPatchError).toMatchObject({
         message: expect.any(String),
         name: expect.any(String),
@@ -140,7 +140,7 @@ describe("/api/routine_activities", () => {
     });
   });
 
-  xdescribe("DELETE /api/routine_activities/:routineActivityId", () => {
+  describe("DELETE /api/routine_activities/:routineActivityId", () => {
     beforeAll(async () => {
       try {
         await axios.delete(
